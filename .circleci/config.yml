@@ -86,7 +86,7 @@ jobs:
             chmod +x ./cc-test-reporter
             ./cc-test-reporter before-build
       - samvera/install_solr_core:
-          solr_config_path: .internal_test_app/solr/config
+          solr_config_path: .internal_test_app/solr/conf
       - samvera/bundle_for_gem:
           ruby_version: << parameters.ruby_version >>
           bundler_version: << parameters.bundler_version >>
