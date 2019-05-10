@@ -86,7 +86,7 @@ jobs:
             chmod +x ./cc-test-reporter
             ./cc-test-reporter before-build
       - samvera/install_solr_core:
-          solr_config_path: .internal_test_app/solr/conf
+          solr_config_path: .internal_test_app/solr/config
       - samvera/bundle_for_gem:
           ruby_version: << parameters.ruby_version >>
           bundler_version: << parameters.bundler_version >>
@@ -104,53 +104,89 @@ workflows:
           name: "bundle_ruby2-6_rails5-2"
           ruby_version: "2.6.3"
           rails_version: "5.2.3"
+      - build:
+          name: "build_ruby2-6_rails5-2"
+          ruby_version: "2.6.3"
+          rails_version: "5.2.3"
+          requires:
+            - bundle_ruby2-6_rails5-2
       - test:
           name: "ruby2-6_rails5-2"
           ruby_version: "2.6.3"
           requires:
-            - bundle_ruby2-6_rails5-2
+            - build_ruby2-6_rails5-2
       - bundle:
           name: "bundle_ruby2-6_rails5-1"
           ruby_version: "2.6.3"
           rails_version: "5.1.7"
+      - build:
+          name: "build_ruby2-6_rails5-1"
+          ruby_version: "2.6.3"
+          rails_version: "5.1.7"
+          requires:
+            - bundle_ruby2-6_rails5-1
       - test:
           name: "ruby2-6_rails5-1"
           ruby_version: "2.6.3"
           requires:
-            - bundle_ruby2-6_rails5-1
+            - build_ruby2-6_rails5-1
       - bundle:
           name: "bundle_ruby2-5_rails5-2"
           ruby_version: "2.5.5"
           rails_version: "5.2.3"
+      - build:
+          name: "build_ruby2-5_rails5-2"
+          ruby_version: "2.5.5"
+          rails_version: "5.2.3"
+          requires:
+            - bundle_ruby2-5_rails5-2
       - test:
           name: "ruby2-5_rails5-2"
           ruby_version: "2.5.5"
           requires:
-            - bundle_ruby2-5_rails5-2
+            - build_ruby2-5_rails5-2
       - bundle:
           name: "bundle_ruby2-5_rails5-1"
           ruby_version: "2.5.5"
           rails_version: "5.1.7"
+      - build:
+          name: "build_ruby2-5_rails5-1"
+          ruby_version: "2.5.5"
+          rails_version: "5.1.7"
+          requires:
+            - bundle_ruby2-5_rails5-1
       - test:
           name: "ruby2-5_rails5-1"
           ruby_version: "2.5.5"
           requires:
-            - bundle_ruby2-5_rails5-1
+            - build_ruby2-5_rails5-1
       - bundle:
           name: "bundle_ruby2-4_rails5-2"
           ruby_version: "2.4.6"
           rails_version: "5.2.3"
+      - build:
+          name: "build_ruby2-4_rails5-2"
+          ruby_version: "2.4.6"
+          rails_version: "5.2.3"
+          requires:
+            - bundle_ruby2-4_rails5-2
       - test:
           name: "ruby2-4_rails5-2"
           ruby_version: "2.4.6"
           requires:
-            - bundle_ruby2-4_rails5-2
+            - build_ruby2-4_rails5-2
       - bundle:
           name: "bundle_ruby2-4_rails5-1"
           ruby_version: "2.4.6"
           rails_version: "5.1.7"
+      - build:
+          name: "build_ruby2-4_rails5-1"
+          ruby_version: "2.4.6"
+          rails_version: "5.1.7"
+          requires:
+            - bundle_ruby2-4_rails5-1
       - test:
           name: "ruby2-4_rails5-1"
           ruby_version: "2.4.6"
           requires:
-            - bundle_ruby2-4_rails5-1
+            - build_ruby2-4_rails5-1
