@@ -16,7 +16,6 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*"] + ["Rakefile", "README.md", "History.md"]
 
   s.add_dependency "activerecord", "~> 5.0"
-  s.add_dependency "active-fedora", ">= 9.0.0"
   s.add_dependency "almond-rails", '~> 0.1'
   s.add_dependency "cancancan", "~> 1.8"
   s.add_dependency "rails", ">= 5", "< 6"
