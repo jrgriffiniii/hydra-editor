@@ -29,6 +29,7 @@ describe Hydra::Presenter do
 
       def self.unique?(field); end
       def self.reflect_on_association(field); end
+      def self.terms; end
       def title; end
       def creator; end
       def new_record?; end
@@ -38,8 +39,6 @@ describe Hydra::Presenter do
 
     class TestPresenter
       include Hydra::Presenter
-      # TODO: This needs to be removed
-      # self.model_class = model_class
       # Terms is the list of fields displayed by app/views/generic_files/_show_descriptions.html.erb
       self.terms = [:title, :creator]
 
@@ -58,6 +57,7 @@ describe Hydra::Presenter do
   before do
     TestPresenter.model_class = model_class
     allow(model_class).to receive(:unique?).and_return(false)
+    allow(model_class).to receive(:terms).and_return([:title, :creator])
     allow(object).to receive(:new_record?).and_return(false)
     allow(object).to receive(:persisted?).and_return(true)
     allow(object).to receive(:model_name).and_return('TestModel')
@@ -75,6 +75,8 @@ describe Hydra::Presenter do
 
   describe '#terms' do
     subject { presenter.terms }
+    let(:model_class) { TestFedoraModel }
+
     it { is_expected.to eq [:title, :creator] }
   end
 
@@ -137,6 +139,8 @@ describe Hydra::Presenter do
 
       context 'for a multivalue string' do
         let(:model_class) { TestFedoraModel }
+        let(:object) { model_class.new }
+        let(:presenter) { TestPresenter.new(object) }
         let(:reflection) { double }
         before do
           allow(reflection).to receive(:collection?).and_return(true)
@@ -153,6 +157,16 @@ describe Hydra::Presenter do
 
       context 'for a multivalue association' do
         let(:field) { :contributors }
+        let(:model_class) { TestFedoraModel }
+        let(:object) { model_class.new }
+        let(:presenter) { TestPresenter.new(object) }
+        let(:reflection) { double }
+        let(:field) { :title }
+        before do
+          allow(reflection).to receive(:collection?).and_return(true)
+          allow(model_class).to receive(:reflect_on_association).with(field).and_return(reflection)
+        end
+
         it { is_expected.to be true }
       end
 
@@ -172,7 +186,15 @@ describe Hydra::Presenter do
       subject { TestPresenter.multiple?(field) }
 
       context 'for a multivalue string' do
+        let(:model_class) { TestFedoraModel }
+        let(:object) { model_class.new }
+        let(:presenter) { TestPresenter.new(object) }
+        let(:reflection) { double }
         let(:field) { :title }
+        before do
+          allow(reflection).to receive(:collection?).and_return(true)
+          allow(model_class).to receive(:reflect_on_association).with(field).and_return(reflection)
+        end
         it { is_expected.to be true }
       end
 

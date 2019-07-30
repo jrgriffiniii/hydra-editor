@@ -5,7 +5,6 @@ describe HydraEditor::ControllerResource::QueryServiceAdapter do
     let(:orm_class) { ActiveFedora }
 
     before do
-      # class ActiveFedora; end unless defined?(ActiveFedora)
       class ActiveFedora; end
     end
 
