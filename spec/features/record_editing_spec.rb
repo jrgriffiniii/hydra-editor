@@ -3,11 +3,7 @@ require 'spec_helper'
 describe 'record editing' do
   let(:user) { FactoryBot.create(:user) }
   let(:record) do
-    begin
-      Audio.find('audio-1')
-    rescue ActiveFedora::ObjectNotFoundError
-      Audio.create(id: 'audio-1', title: ['Cool Track'])
-    end
+    Audio.find_or_create_by(id: 'audio-1', title: ['Cool Track'])
   end
 
   before do

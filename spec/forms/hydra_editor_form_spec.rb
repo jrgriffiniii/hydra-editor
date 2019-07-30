@@ -2,9 +2,10 @@ require 'spec_helper'
 
 describe HydraEditor::Form do
   before do
-    class TestModel < ActiveFedora::Base
-      property :title, predicate: ::RDF::Vocab::DC.title
-      property :creator, predicate: ::RDF::Vocab::DC.creator, multiple: false
+    class TestModel < ActiveRecord::Base
+      attr_accessor :title, :creator
+      # property :title, predicate: ::RDF::Vocab::DC.title
+      # property :creator, predicate: ::RDF::Vocab::DC.creator, multiple: false
     end
 
     class TestForm

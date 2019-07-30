@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe MultiValueInput, type: :input do
-  class Foo < ActiveFedora::Base
-    property :bar, predicate: ::RDF::URI('http://example.com/bar')
+  class Foo < ActiveRecord::Base
+    # property :bar, predicate: ::RDF::URI('http://example.com/bar')
+    attr_accessor :bar
 
     def double_bar
       bar.map { |b| b + b }

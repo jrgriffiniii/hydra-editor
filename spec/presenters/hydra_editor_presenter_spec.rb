@@ -2,19 +2,36 @@ require 'spec_helper'
 
 describe Hydra::Presenter do
   before do
-    class Contributor < ActiveFedora::Base
-      has_and_belongs_to_many :books, predicate: ::RDF::Vocab::DC.title
+    class Contributor < ActiveRecord::Base
+      def self.table_name_prefix
+        'hydra_editor'
+      end
+
+      # has_and_belongs_to_many :books, predicate: ::RDF::Vocab::DC.title
+      has_and_belongs_to_many :books
     end
 
-    class Publisher < ActiveFedora::Base
-      has_many :books, predicate: ::RDF::Vocab::DC.title
+    class Publisher < ActiveRecord::Base
+      def self.table_name_prefix
+        'hydra_editor'
+      end
+
+      # has_many :books, predicate: ::RDF::Vocab::DC.title
+      has_many :books
     end
 
-    class TestModel < ActiveFedora::Base
-      property :title, predicate: ::RDF::Vocab::DC.title
-      property :creator, predicate: ::RDF::Vocab::DC.creator, multiple: false
-      has_and_belongs_to_many :contributors, predicate: ::RDF::Vocab::DC.contributor
-      belongs_to :publisher, predicate: ::RDF::Vocab::DC.publisher
+    class TestModel < ActiveRecord::Base
+      def self.table_name_prefix
+        'hydra_editor'
+      end
+
+      attr_accessor :title, :creator
+      # property :title, predicate: ::RDF::Vocab::DC.title
+      # property :creator, predicate: ::RDF::Vocab::DC.creator, multiple: false
+      # has_and_belongs_to_many :contributors, predicate: ::RDF::Vocab::DC.contributor
+      has_and_belongs_to_many :contributors
+      # belongs_to :publisher, predicate: ::RDF::Vocab::DC.publisher
+      belongs_to :publisher
     end
 
     class TestPresenter
