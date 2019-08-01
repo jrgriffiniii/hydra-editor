@@ -68,7 +68,7 @@ describe Hydra::Presenter do
     it { is_expected.to eq 'TestModel' }
   end
 
-    describe '#model_name' do
+  describe '#model_name' do
     subject { presenter.model_name }
     it { is_expected.to eq 'TestModel' }
   end

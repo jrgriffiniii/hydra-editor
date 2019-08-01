@@ -1,76 +1,26 @@
 require 'spec_helper'
 require 'pry-byebug'
 
-describe RecordsController do
+describe RecordsController, active_fedora_stubbed: true do
   routes { HydraEditor::Engine.routes }
 
-  before(:all) do
-    # For stubbing the API for ActiveFedora models
-    class TestFedoraModel
-
-      def self.unique?(field); end
-      def self.reflect_on_association(field); end
-      def self.terms; end
-
-      def initialize(**args); end
-      def title; end
-      def creator; end
-      def creator=(values); end
-      def isPartOf; end
-      def new_record?; end
-      def persisted?; end
-      def model_name
-        ActiveModel::Name.new(self.class)
-      end
-      def save; end
-      def id; end
-      def attributes=(args); end
-      def attributes
-        {}
-      end
-    end
-
-    class TestFedoraModelForm
-      include HydraEditor::Form
-
-      def title; end
-      def description; end
-    end
-  end
   let(:model_class) { TestFedoraModel }
   let(:object) { instance_double(TestFedoraModel) }
   let(:form_class) { class_double(TestFedoraModelForm).as_stubbed_const(transfer_nested_constants: true) }
   let(:form) { instance_double(TestFedoraModelForm) }
+  let(:active_fedora_class) { class_double(ActiveFedora::Base).as_stubbed_const(transfer_nested_constants: true) }
+
+  before(:all) do
+    module ActiveFedora
+      class Base; end
+    end
+  end
 
   after(:all) do
-    Object.send(:remove_const, :TestFedoraModelForm)
-    Object.send(:remove_const, :TestFedoraModel)
+    Object.send(:remove_const, :ActiveFedora)
   end
 
   before do
-    allow(form).to receive(:description).and_return([''])
-    allow(form).to receive(:title).and_return(['My title'])
-    allow(form_class).to receive(:model_attributes)
-    allow(form_class).to receive(:terms).and_return([:title, :creator])
-    allow(form_class).to receive(:new).and_return(form)
-
-    allow(model_class).to receive(:name).and_return('TestFedoraModel')
-    allow(model_class).to receive(:new).and_return(object)
-    allow(model_class).to receive(:unique?).and_return(false)
-    allow(model_class).to receive(:terms).and_return([:title, :creator])
-    allow(object).to receive(:save).and_return(true)
-    allow(object).to receive(:new_record?).and_return(false)
-    allow(object).to receive(:persisted?).and_return(true)
-    allow(object).to receive(:model_name).and_return(ActiveModel::Name.new(TestFedoraModel))
-    allow(object).to receive(:attributes=)
-    allow(object).to receive(:id).and_return('test-id')
-    allow(object).to receive(:to_s).and_return('test-id')
-    allow(object).to receive(:title).and_return(['My title'])
-    allow(object).to receive(:isPartOf).and_return([])
-    allow(object).to receive(:creator=)
-    allow(object).to receive(:creator).and_return(['Fleece Vest'])
-    allow(object).to receive(:class).and_return(model_class)
-
     HydraEditor.models = [model_class.name, 'Pdf']
   end
 
@@ -125,7 +75,7 @@ describe RecordsController do
 
         describe 'when the user has access to create only some classes' do
           before do
-            controller.current_ability.cannot :create, ActiveFedora::Base
+            controller.current_ability.cannot :create, ActiveRecord::Base
             controller.current_ability.can :create, model_class
           end
           it 'permits users to create works with the authorized format types' do
@@ -192,7 +142,8 @@ describe RecordsController do
       let(:audio) { object }
       before do
         allow(audio).to receive(:persisted?).and_return(true)
-        allow(ActiveFedora::Base).to receive(:find).and_return(audio)
+        # allow(ActiveFedora::Base).to receive(:find).and_return(audio)
+        allow(active_fedora_class).to receive(:find).and_return(audio)
         allow(controller).to receive(:authorize!)
         allow(object).to receive(:title).and_return(['My title2'])
       end
@@ -208,7 +159,8 @@ describe RecordsController do
       let(:audio) { object }
       before do
         allow(audio).to receive(:persisted?).and_return(true)
-        allow(ActiveFedora::Base).to receive(:find).with('test-id').and_return(audio)
+        # allow(ActiveFedora::Base).to receive(:find).with('test-id').and_return(audio)
+        allow(active_fedora_class).to receive(:find).and_return(audio)
         allow(controller).to receive(:authorize!)
       end
 

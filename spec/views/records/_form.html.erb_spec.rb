@@ -1,8 +1,11 @@
 require 'spec_helper'
 
-describe 'records/_form' do
-  let(:audio) { Audio.new }
-  let(:form) { AudioForm.new(audio) }
+describe 'records/_form', active_fedora_stubbed: true do
+  let(:model_class) { TestFedoraModel }
+  let(:object) { instance_double(TestFedoraModel) }
+  let(:form_class) { class_double(TestFedoraModelForm).as_stubbed_const(transfer_nested_constants: true) }
+  let(:form) { instance_double(TestFedoraModelForm) }
+  let(:audio) { object }
 
   before do
     allow(view).to receive(:key).and_return(:title)

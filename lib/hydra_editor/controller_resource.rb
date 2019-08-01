@@ -32,7 +32,7 @@ class HydraEditor::ControllerResource < CanCan::ControllerResource
         false
       end
 
-      def self.build(orm_class)
+      def self.build(orm_class:)
         if registered?(orm_class)
           adapter_class(orm_class).new(orm_class: orm_class)
         else
@@ -55,17 +55,32 @@ class HydraEditor::ControllerResource < CanCan::ControllerResource
       end
     end
 
+    def orm_module_name
+      HydraEditor.config[:module]
+    end
+
+    def orm_module
+      begin
+        orm_module_name.constantize
+      rescue
+        Rails.logger.error "Failed to load the ORM: #{orm_module_name}.  Using ActiveFedora as the default."
+        ActiveFedora::Base
+      end
+    end
+
     def orm_class
-      if defined?(::Valkyrie)
-        ::Valkyrie.config.metadata_adapter.query_service
-      elsif defined?(::ActiveFedora)
-        ::ActiveFedora::Base
+      case orm_module.name
+      when 'Valkyrie'
+        Valkyrie.config.metadata_adapter.query_service
+      when 'ActiveFedora'
+        ActiveFedora::Base
       else
-        ::ActiveRecord::Base
+        Rails.logger.warn "The ORM #{orm_module_name} is not supported.  Using ActiveFedora as the default."
+        ActiveFedora::Base
       end
     end
 
     def query_service
-      @query_service ||= QueryServiceAdapter.build(orm_class)
+      @query_service ||= QueryServiceAdapter.build(orm_class: orm_class)
     end
 end
