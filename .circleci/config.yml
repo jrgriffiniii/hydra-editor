@@ -13,7 +13,7 @@ jobs:
       rails_version:
         type: string
     executor:
-      name: 'samvera/ruby_fcrepo_solr'
+      name: 'samvera/ruby'
       ruby_version: << parameters.ruby_version >>
     environment:
       ENGINE_CART_RAILS_OPTIONS: --skip-git --skip-bundle --skip-listen --skip-spring --skip-yarn --skip-keeps --skip-coffee --skip-puma --skip-test
@@ -38,7 +38,9 @@ jobs:
           ruby_version: << parameters.ruby_version >>
           bundler_version: << parameters.bundler_version >>
           project: hydra-editor
-      - samvera/parallel_rspec
+      - run:
+          name: Run the tests
+          command: bundle exec rake
       - run:
           name: "Submit the exit code to Code Climate"
           command: ./cc-test-reporter after-build --exit-code $?
