@@ -44,6 +44,7 @@ jobs:
           ruby_version: << parameters.ruby_version >>
           bundler_version: << parameters.bundler_version >>
           project: hydra-editor
+      - samvera/rubocop
       - samvera/parallel_rspec
       - run:
           name: "Submit the exit code to Code Climate"
