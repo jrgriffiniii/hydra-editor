@@ -46,7 +46,7 @@ jobs:
           project: hydra-editor
       - run:
           name: Run the tests
-          command: bundle exec rake
+          command: bundle exec rspec spec
       - run:
           name: "Submit the exit code to Code Climate"
           command: ./cc-test-reporter after-build --exit-code $?
