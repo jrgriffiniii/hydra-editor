@@ -32,25 +32,18 @@ jobs:
             curl -L "https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64" > ./cc-test-reporter
             chmod +x ./cc-test-reporter
             ./cc-test-reporter before-build
-      - samvera/engine_cart_generate:
-          cache_key: v5-internal-test-app-{{ checksum "hydra-editor.gemspec" }}-{{ checksum "spec/test_app_templates/lib/generators/test_app_generator.rb" }}-<< parameters.rails_version >>-<< parameters.ruby_version >>
+      - samvera/install_solr_core:
+          solr_config_path: .internal_test_app/solr/config
       - samvera/bundle_for_gem:
           ruby_version: << parameters.ruby_version >>
           bundler_version: << parameters.bundler_version >>
           project: hydra-editor
-      - samvera/install_solr_core:
-          solr_config_path: .internal_test_app/solr/config
       - run:
           name: Run the tests
           command: bundle exec rake
       - run:
           name: "Submit the exit code to Code Climate"
           command: ./cc-test-reporter after-build --exit-code $?
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/*
-            - project/**/*
 
 workflows:
   version: 2
